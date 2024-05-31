@@ -31,24 +31,72 @@ const createNewProduct = (body) => {
     ]);
 };
 
-const updateProduct = (body, id) => {
-    const { name, description, price_range, min_order, order_req, supply_ability, history_view_product, user_id, orderClick, image } = body;
-    const query = `
-        UPDATE products SET name = ?, description = ?, price_range = ?, min_order = ?, order_req = ?, supply_ability = ?, history_view_product = ?, user_id = ?, order_click = ?, image = ?
-        WHERE id = ?
-    `;
-    return pool.execute(query, [name, description, price_range, min_order, order_req, supply_ability, history_view_product, user_id, orderClick, image, id]);
+const updateProduct = (body, idProduct) => {
+    // Bangun query dinamis
+    const fields = [];
+    const values = [];
+
+    for (let key in body) {
+        if (body[key] !== undefined) {
+            fields.push(`${key} = ?`);
+            values.push(body[key]);
+        }
+    }
+
+    if (fields.length === 0) {
+        throw new Error('No fields to update');
+    }
+
+    const SQLQuery = `UPDATE product SET ${fields.join(', ')} WHERE id = ?`;
+    values.push(idProduct);
+
+    return pool.execute(SQLQuery, values);
 };
 
 const deleteProduct = (id) => {
-    const query = 'DELETE FROM products WHERE id = ?';
+    const query = 'DELETE FROM product WHERE id = ?';
     return pool.execute(query, [id]);
 }
+
+const incrementProductViews = (idProduct) => {
+    const query = `
+        UPDATE product 
+        SET history_view_product = history_view_product + 1, order_click = order_click + 1 
+        WHERE id = ?
+    `;
+    return pool.execute(query, [idProduct]);
+};
+
+const incrementOrderReq = (idProduct) => {
+    const query = `
+        UPDATE product 
+        SET order_req = order_req + 1 
+        WHERE id = ?
+    `;
+    return pool.execute(query, [idProduct]);
+};
+
+const searchProducts = (searchTerm) => {
+    const query = `
+        SELECT * FROM product
+        WHERE name LIKE ? OR description LIKE ? OR price_range LIKE ?
+    `;
+    const searchValue = `%${searchTerm}%`;
+    return pool.execute(query, [searchValue, searchValue, searchValue])
+        .then(([results]) => results)
+        .catch(error => {
+            console.error('Error executing search query:', error);
+            throw error;
+        });
+};
 
 module.exports = {
     getAllProduct,
     createNewProduct,
     updateProduct,
     deleteProduct,
-    getProductById
+    getProductById,
+    incrementProductViews,
+    incrementOrderReq,
+    searchProducts
 }

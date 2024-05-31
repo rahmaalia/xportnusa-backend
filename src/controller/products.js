@@ -3,38 +3,7 @@ const fs = require('fs');
 const path = require('path'); 
 const { v4: uuidv4 } = require('uuid');
 const { uploadFileToGCS } = require('../middleware/multer');
-
-
-const getAllProduct = async(req, res) => {
-    try {
-        const [data] = await productsModel.getAllProduct();
-        res.json({
-            message: 'GET products success',
-            data: data
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: 'server error',
-            serverMessage: error
-        })
-    }
-}
-
-const getProductById = async (req, res) => {
-    const { idProduct } = req.params;
-    try {
-        const [data] = await productsModel.getProductById(idProduct);
-        res.json({
-            message: 'GET product by ID success',
-            data: data
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: 'server error',
-            serverMessage: error
-        });
-    }
-};
+const { deleteFileFromGCS } = require('../middleware/multer');
 
 
 const createNewProduct = async (req, res) => {
@@ -43,7 +12,7 @@ const createNewProduct = async (req, res) => {
     // Validasi field yang diperlukan
     if (!body.name || !body.description || !body.price_range || !body.min_order || !body.order_req || !body.supply_ability || !body.user_id ) {
         return res.status(400).json({
-            message: 'Gagal membuat produk baru',
+            message: 'Failed to create new product',
             error: 'Semua field harus diisi'
         });
     }
@@ -84,32 +53,74 @@ const createNewProduct = async (req, res) => {
 };
 
 
+const getAllProduct = async(req, res) => {
+    try {
+        const [data] = await productsModel.getAllProduct();
+        res.json({
+            message: 'GET products success',
+            data: data
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'server error',
+            serverMessage: error
+        })
+    }
+}
+
+const getProductById = async (req, res) => {
+    const { idProduct } = req.params;
+    try {
+        const [data] = await productsModel.getProductById(idProduct);
+
+        if (data.length === 0) {
+            return res.status(404).json({
+                message: 'Product not found'
+            });
+        }
+
+        // Increment history_view_product 
+        await productsModel.incrementProductViews(idProduct);
+
+        res.json({
+            message: 'GET product by ID success',
+            data: data
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'server error',
+            serverMessage: error
+        });
+    }
+};
+
+const updateOrderReq = async (req, res) => {
+    const { idProduct } = req.params;
+    try {
+        await productsModel.incrementOrderReq(idProduct);
+        res.json({
+            message: 'Order request incremented successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'server error',
+            serverMessage: error
+        });
+    }
+};
+
 const updateProduct = async (req, res) => {
     const { idProduct } = req.params;
     const { body, file } = req;
     try {
         if (file) {
-            body.address = file.filename;
-
-            // Hapus file gambar lama jika ada
-            const [user] = await productsModel.getProductById(idProduct);
-            if (user && user.length > 0 && user[0].address) {
-                const oldFilePath = path.join(__dirname, '../../public/images', user[0].address);
-                try {
-                    if (fs.existsSync(oldFilePath)) {
-                        fs.unlinkSync(oldFilePath);
-                    } else {
-                        console.log(`File ${oldFilePath} not found`);
-                    }
-                } catch (unlinkError) {
-                    console.error(`Error removing old file: ${unlinkError}`);
-                }
-            }
+            const publicUrl = await uploadFileToGCS(file); // Unggah ke GCS dan dapatkan URL publik
+            body.image = publicUrl;
         }
 
         await productsModel.updateProduct(body, idProduct);
         res.json({
-            message: 'UPDATE user success',
+            message: 'UPDATE product success',
             data: {
                 id: idProduct,
                 ...body
@@ -118,41 +129,64 @@ const updateProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: 'Server Error',
-            serverMessage: error,
+            serverMessage: error.message || error,
         });
     }
 };
 
-
 const deleteProduct = async (req, res) => {
     const { idProduct } = req.params;
     try {
-        // Dapatkan data pengguna berdasarkan ID
-        const [user] = await productsModel.getProductById(idProduct);
-        if (user && user.length > 0 && user[0].address) {
-            const oldFilePath = path.join(__dirname, '../../public/images', user[0].address); // Sesuaikan path
-            try {
-                if (fs.existsSync(oldFilePath)) {
-                    fs.unlinkSync(oldFilePath);
-                } else {
-                    console.log(`File ${oldFilePath} not found`);
-                }
-            } catch (unlinkError) {
-                console.error(`Error removing old file: ${unlinkError}`);
-            }
-        }
+        // Dapatkan data produk berdasarkan ID
+        const [product] = await productsModel.getProductById(idProduct);
+        if (product && product.length > 0) {
+            const imageFileName = path.basename(product[0].image); // Ambil nama file gambar dari URL
+            console.log(`Attempting to delete image: ${imageFileName}`);
 
-        await productsModel.deleteProduct(idProduct);
-        res.json({
-            message: 'DELETE user success',
-            data: null
-        });
+            try {
+                await deleteFileFromGCS(imageFileName); // Hapus gambar dari GCS
+                console.log(`File ${imageFileName} deleted from GCS`);
+            } catch (error) {
+                console.error(`Error removing file from GCS: ${error}`);
+                return res.status(500).json({
+                    message: 'Error deleting image from GCS',
+                    serverMessage: error.message
+                });
+            }
+
+            await productsModel.deleteProduct(idProduct);
+            res.json({
+                message: 'DELETE product success',
+                data: null
+            });
+        } else {
+            res.status(404).json({
+                message: 'Product not found'
+            });
+        }
     } catch (error) {
-        console.error('Error deleting user:', error);
+        console.error('Error deleting product:', error);
         res.status(500).json({
             message: 'Server Error',
             serverMessage: error.message,
         });
+    }
+};
+
+const searchProducts = async (req, res) => {
+    const searchTerm = req.query.term;
+    if (!searchTerm) {
+        return res.status(400).json({ error: "Search term is required" });
+    }
+    try {
+        const results = await productsModel.searchProducts(searchTerm);
+        res.json({
+            message: 'SEARCH user success',
+            data: results
+        });
+    } catch (error) {
+        console.error("Error executing search query:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -161,5 +195,7 @@ module.exports = {
     createNewProduct,
     updateProduct,
     deleteProduct,
-    getProductById
+    getProductById,
+    updateOrderReq,
+    searchProducts
 }
