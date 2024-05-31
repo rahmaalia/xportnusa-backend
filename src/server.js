@@ -1,8 +1,10 @@
 require('dotenv').config();
 const express = require('express');
-const usersRoutes = require('./routes/products');
+const usersRoutes = require('./routes/users');
+const productsRoutes = require('./routes/products');
 const middlewareLogRequest = require('./middleware/logs');
-const upload = require('./middleware/multer');
+// const upload = require('./middleware/multer');
+const { upload } = require('./middleware/multer');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 
@@ -19,12 +21,9 @@ app.use(middlewareLogRequest);
 
 app.use('/assets', express.static('public/images'))
 
+app.use('/products', productsRoutes);
 app.use('/users', usersRoutes);
-app.post('/upload',upload.single('address'),(req, res) => {
-    res.json({
-        message: 'Upload berhasil'
-    })
-})
+
 
 // error handling
 app.use((err, req, res, next) => {

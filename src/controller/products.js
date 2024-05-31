@@ -1,6 +1,8 @@
 const productsModel = require('../models/products');
 const fs = require('fs');
 const path = require('path'); 
+const { v4: uuidv4 } = require('uuid');
+const { uploadFileToGCS } = require('../middleware/multer');
 
 
 const getAllProduct = async(req, res) => {
@@ -35,26 +37,51 @@ const getProductById = async (req, res) => {
 };
 
 
-const createNewProduct = async(req, res) => {
-    const {body, file} = req;
+const createNewProduct = async (req, res) => {
+    const { body, file } = req;
+
+    // Validasi field yang diperlukan
+    if (!body.name || !body.description || !body.price_range || !body.min_order || !body.order_req || !body.supply_ability || !body.user_id ) {
+        return res.status(400).json({
+            message: 'Gagal membuat produk baru',
+            error: 'Semua field harus diisi'
+        });
+    }
+
+    // Set ID acak dan nilai default untuk order_click dan history_view_product
+    const newProduct = {
+        id: uuidv4(),
+        name: body.name,
+        description: body.description,
+        price_range: body.price_range,
+        min_order: body.min_order,
+        order_req: body.order_req,
+        supply_ability: body.supply_ability,
+        history_view_product: 0,
+        user_id: body.user_id,
+        order_click: 0,
+        image: '' // Default value for image
+    };
+
     try {
-        // Pastikan file gambar telah diunggah
         if (file) {
-            body.address = file.filename; // Simpan nama file gambar ke field 'address'
+            const publicUrl = await uploadFileToGCS(file); // Unggah ke GCS dan dapatkan URL publik
+            newProduct.image = publicUrl; // Simpan URL gambar ke field 'image'
         }
 
-        await productsModel.createNewProduct(body);
+        await productsModel.createNewProduct(newProduct);
         res.status(201).json({
             message: 'CREATE new product success',
-            data: body
-        })
+            data: newProduct
+        });
     } catch (error) {
+        console.error('Error creating new product:', error); // Log the error
         res.status(500).json({
             message: 'server error',
             serverMessage: error
-        })
+        });
     }
-}
+};
 
 
 const updateProduct = async (req, res) => {
