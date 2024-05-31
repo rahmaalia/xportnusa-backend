@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "xportnusa-425004",
+  "private_key_id": "bcbd25508fddc6635e358e08c35d1e4ecb1a7888",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDBIStCu3xnPVI5\nkhRXtHd9uYEZx+JfHYjYO4ADzJiYgUE8L+FyNVW4tEMYUxst4iUszxc5wTbqlBs5\nCLRsMtzUKl8R+i1Vw6XjTeSJXaaXp7Iaj5tM5KsbuKxGPswK+27AIRwA+rfyMyEI\nGVPIGDRQ2T8XmnevVLmABfOwfwGmmUzOJc1cSVV6Al4wruNRjIBxRsA64zjqi3af\nXhGym7llbcBDjNsLG8lDfCvPIjJiUWjjf77HsMUrCCO1YwzMOhEw9edIWmwnLp1d\n2HXzVaI9g7AONFPTGmFTvzKoiuiNNiy6OkPOnm3ncfoZC0WUDxFk9f1jMkZIUA3X\ndEcDpOQ9AgMBAAECggEAAXQQNZzgQBNnuknyCqxyqrUFYso73REwKk2+zQV4hOPC\n+upaR7ymWOxlBdFpJTBYcCFdHvPPzdfU6oS5KAIl+s7DM+qfDlY39wkJpWL+IQwJ\nyPC4AdotWZACKr1aVe5w10GWPoGMIOy2n9PiG9uFcIEssV/Hl6dISPIFkZhQCd4Y\nepZ1koF/QRQhzCOSfFgMxk4G+n3y3jqEa3I2zydbCb9ViOwRgQiNGLU+BMJtB0Ux\nrVO0tn+M2rQIRQEmpLxwpZtI8uX4DViKbCCupJRKGewUvEYnaAfws/VkTLn9r3tj\neS1XWbaw2yN6sQKb5752PyF1IeUyv95qhUVoRgR2XQKBgQD6yYOvo1xzZ1g8tw7R\nCU09cmD8rZqGtiGUead4g4h45NO76Bu6iG3+RkTZ/eBVcy9LRtX7NtwiwyRSpIlu\nVFSPqJpzeHUqMYlVLcLqYm64ucs/KqgmqV45rkjec4NeghauKi0tLIs9Br8VAn2I\nvTxfJSZTCex4y/UJnjqRF0nBdwKBgQDFJNkBRAyfFgX/BsS/19mitz7F7Vl9fS4N\nOW4kZm5ijyPeaAGzjU2ym06SjUaSEu60qZ02H+hfr2HwnG84MjlF1xfoVaK4C4jH\ngdhXB27mr4yMF3ZkodSwb8BMVcDBtYl7Wjavp+lepPSVZEhmN/IRWf4MHxBsjttx\n1dlGy4UU6wKBgH1D8JnncENYiHNzQFxbWBBsNFOh50CIcsd16JfCo4U3TydZrZgD\nk2Vh9fwo2kf0S9g+3p0nbteSP29kLh1E1CQZpGQu898KdT1tqSFn30Q30XSQuwLs\nsFsBWfZ7HlAzjF6cRIp+6GGoIAO/hbKqSyB/LuBlYY+I2LFgLoLQbg/LAoGAODsj\nXnYPd4zrlutSUTn7DKthz0i83stGyGTaIq3IzHnxjC10Vsd2Ivyjc6+yMlYOGh/L\nBLYjLK+0qtGj8453wZDxc8aBTCeWEvnZQDGRk2D9ILRMg7WZGd42Jk/LVDU4iqOX\nt5CYQvOgA8B/2hAZDpPxn3l40M4Kj7Skbcn9IpMCgYBeB9uaZfJo7xgb90/9N99D\nP2McCDH5+a1CzFqa92juKjDxOsRQbcXLTncvbQzP7xoThY5x6XpyyHBLYeygGFOd\nBof9eOyxQPNTwiXj2s1WPDikyk4Brve0XzyRNRYOyHj43KxrJglOIMl90KvoiZAq\ncoXB+HBOkRUI/lIbTDluiw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "access-for-google-storage@xportnusa-425004.iam.gserviceaccount.com",
+  "client_id": "101255305961743448475",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/access-for-google-storage%40xportnusa-425004.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
