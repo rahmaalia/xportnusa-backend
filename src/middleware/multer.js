@@ -38,6 +38,21 @@ const uploadFileToGCS = (file) => {
     });
 };
 
+const deleteFileFromGCS = (fileName) => {
+    return new Promise((resolve, reject) => {
+        const file = bucket.file(fileName);
+        file.delete((err, apiResponse) => {
+            if (err) {
+                console.error(`Error deleting file from GCS: ${err}`);
+                reject(err);
+            } else {
+                console.log(`File ${fileName} deleted from GCS`);
+                resolve(apiResponse);
+            }
+        });
+    });
+};
+
 const upload = multer({
     storage: multerStorage,
     limits: {
@@ -47,5 +62,6 @@ const upload = multer({
 
 module.exports = {
     upload,
-    uploadFileToGCS
+    uploadFileToGCS,
+    deleteFileFromGCS
 };
