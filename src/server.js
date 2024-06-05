@@ -1,10 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const usersRoutes = require('./routes/users');
+const sellersRoutes = require('./routes/sellers');
 const productsRoutes = require('./routes/products');
+const buyersRoutes = require('./routes/buyers');
 const middlewareLogRequest = require('./middleware/logs');
-// const upload = require('./middleware/multer');
-const { upload } = require('./middleware/multer');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 
@@ -14,7 +13,6 @@ const port = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // To handle URL-encoded data
-const uploade = multer(); // Initialize multer
 
 app.use(middlewareLogRequest);
 // app.use(express.json());
@@ -22,7 +20,8 @@ app.use(middlewareLogRequest);
 app.use('/assets', express.static('public/images'))
 
 app.use('/products', productsRoutes);
-app.use('/users', usersRoutes);
+app.use('/sellers', sellersRoutes);
+app.use('/buyers', buyersRoutes);
 
 
 // error handling
