@@ -12,6 +12,16 @@ const getProductById = (idProduct) => {
     return pool.execute(query, [idProduct]);
 };
 
+const getIndexedProductById = async (idProduct) => {
+    const query = 'SELECT id, name, description, price_range, min_order, order_req, supply_ability, history_view_product, user_id, order_click, image, (SELECT COUNT(*) FROM product p WHERE p.id < ?) AS `item_id` FROM product WHERE id = ?';
+    const [rows] = await pool.execute(query, [idProduct, idProduct]);
+    const indexedProduct = rows[0];
+    if (indexedProduct) {
+        indexedProduct.item_id = indexedProduct.item_id || 0; // Set default value to 0 if index is null or undefined
+    }
+    return indexedProduct;
+};
+
 const createNewProduct = (body) => {
     const SQLQuery = `INSERT INTO product (id, name, description, price_range, min_order, order_req, supply_ability, history_view_product, user_id, order_click, image)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -98,5 +108,6 @@ module.exports = {
     getProductById,
     incrementProductViews,
     incrementOrderReq,
-    searchProducts
+    searchProducts,
+    getIndexedProductById
 }
