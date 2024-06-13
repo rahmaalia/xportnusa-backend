@@ -18,6 +18,12 @@ router.get('/', ProductsController.getAllProduct);
 // GET PRODUCT BY ID - get
 router.get('/:idProduct', ProductsController.getProductById);
 
+// FILTER RECOMMENDATIONS - post
+router.post('/recommendations', upload.none(), ProductsController.getRecommendationsAndProducts);
+
+// FILTER RECOMMENDATIONS ITEMID - post
+router.post('/recommendationsItem', upload.none(), ProductsController.getRecommendationsbyItem);
+
 // UPDATE PRODUCT - patch
 router.patch('/:idProduct', upload.single('image'), ProductsController.updateProduct);
 
