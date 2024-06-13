@@ -68,6 +68,32 @@ const getAllProduct = async(req, res) => {
     }
 }
 
+// const getProductById = async (req, res) => {
+//     const { idProduct } = req.params;
+//     try {
+//         const [data] = await productsModel.getProductById(idProduct);
+
+//         if (data.length === 0) {
+//             return res.status(404).json({
+//                 message: 'Product not found'
+//             });
+//         }
+
+//         // Increment history_view_product 
+//         await productsModel.incrementProductViews(idProduct);
+
+//         res.json({
+//             message: 'GET product by ID success',
+//             data: data
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: 'server error',
+//             serverMessage: error
+//         });
+//     }
+// };
+
 const getProductById = async (req, res) => {
     const { idProduct } = req.params;
     try {
@@ -79,17 +105,22 @@ const getProductById = async (req, res) => {
             });
         }
 
+        // Hitung indeks produk
+        const indexedProduct = await productsModel.getIndexedProductById(idProduct);
+
         // Increment history_view_product 
         await productsModel.incrementProductViews(idProduct);
 
         res.json({
             message: 'GET product by ID success',
-            data: data
+            data: {
+                ...indexedProduct,
+            }
         });
     } catch (error) {
         res.status(500).json({
             message: 'server error',
-            serverMessage: error
+            serverMessage: error.message || error
         });
     }
 };
