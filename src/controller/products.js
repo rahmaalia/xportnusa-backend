@@ -1,4 +1,5 @@
 const productsModel = require('../models/products');
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path'); 
 const { v4: uuidv4 } = require('uuid');
@@ -125,6 +126,105 @@ const getProductById = async (req, res) => {
     }
 };
 
+const getRecommendationsAndProducts = async (req, res) => {
+    const { product_name } = req.body;
+
+    try {
+        // Memanggil endpoint eksternal
+        const response = await axios.post('https://xport-j3z4zwlm6q-uc.a.run.app/recommend/search', {
+            product_name
+        });
+
+        const recommendedNames = response.data;
+        if (!Array.isArray(recommendedNames)) {
+            return res.status(500).json({ error: 'Invalid response from external API' });
+        }
+
+        // Ambil data produk berdasarkan nama dari database Anda
+        const products = await productsModel.getProductsByNames(recommendedNames);
+
+        if (products.length === 0) {
+            return res.status(404).json({
+                message: 'Tidak ada produk yang ditemukan sesuai dengan rekomendasi',
+                data: []
+            });
+        }
+
+        res.json({
+            message: 'GET recommended products success',
+            data: products
+        });
+    } catch (error) {
+        console.error("Error executing request to external API:", error);
+        
+        // Tampilkan respons error dari endpoint eksternal
+        if (error.response) {
+            return res.status(error.response.status).json({ 
+                message: error.message,
+                data: error.response.data 
+            });
+        } else {
+            return res.status(500).json({ 
+                message: 'Internal server error',
+                serverMessage: error.message 
+            });
+        }
+    }
+};
+
+const getRecommendationsbyItem = async (req, res) => {
+    const { item_id } = req.body;
+
+    // Validasi bahwa item_id adalah integer
+    if (!Number.isInteger(Number(item_id))) {
+        return res.status(400).json({ error: 'item_id harus berupa integer' });
+    }
+
+    try {
+        console.log('Mengirim permintaan ke endpoint eksternal dengan item_id:', item_id);
+
+        // Memanggil endpoint eksternal
+        const response = await axios.post('https://xport-j3z4zwlm6q-uc.a.run.app/recommend/content', {
+            item_id: Number(item_id)  // Pastikan item_id adalah integer
+        });
+
+        const recommendedNames = response.data;
+        if (!Array.isArray(recommendedNames)) {
+            return res.status(500).json({ error: 'Invalid response from external API' });
+        }
+
+        // Ambil data produk berdasarkan nama dari database Anda
+        const products = await productsModel.getProductsByNames(recommendedNames);
+
+        if (products.length === 0) {
+            return res.status(404).json({
+                message: 'Tidak ada produk yang ditemukan sesuai dengan rekomendasi',
+                data: []
+            });
+        }
+
+        res.json({
+            message: 'GET recommended products success',
+            data: products
+        });
+    } catch (error) {
+        console.error("Error executing request to external API:", error);
+
+        // Tampilkan respons error dari endpoint eksternal
+        if (error.response) {
+            return res.status(error.response.status).json({
+                message: error.message,
+                data: error.response.data
+            });
+        } else {
+            return res.status(500).json({
+                message: 'Internal server error',
+                serverMessage: error.message
+            });
+        }
+    }
+};
+
 const updateOrderReq = async (req, res) => {
     const { idProduct } = req.params;
     try {
@@ -228,5 +328,7 @@ module.exports = {
     deleteProduct,
     getProductById,
     updateOrderReq,
-    searchProducts
+    searchProducts,
+    getRecommendationsAndProducts,
+    getRecommendationsbyItem
 }

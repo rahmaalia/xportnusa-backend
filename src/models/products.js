@@ -17,9 +17,16 @@ const getIndexedProductById = async (idProduct) => {
     const [rows] = await pool.execute(query, [idProduct, idProduct]);
     const indexedProduct = rows[0];
     if (indexedProduct) {
-        indexedProduct.item_id = indexedProduct.item_id || 0; // Set default value to 0 if index is null or undefined
+        indexedProduct.item_id = indexedProduct.item_id || 0; 
     }
     return indexedProduct;
+};
+
+const getProductsByNames = async (productNames) => {
+    const placeholders = productNames.map(() => '?').join(', ');
+    const query = `SELECT * FROM product WHERE name IN (${placeholders})`;
+    const [rows] = await pool.execute(query, productNames);
+    return rows;
 };
 
 const createNewProduct = (body) => {
@@ -109,5 +116,6 @@ module.exports = {
     incrementProductViews,
     incrementOrderReq,
     searchProducts,
-    getIndexedProductById
+    getIndexedProductById,
+    getProductsByNames
 }
