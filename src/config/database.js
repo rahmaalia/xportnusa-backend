@@ -6,8 +6,11 @@ const pool = mysql.createPool({
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    // socketPath: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`
-    connectTimeout: 10000  // 10 detik
+    // port: process.env.PORT, // Pastikan portnya benar
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    connectTimeout: 60000
 });
 
 pool.getConnection((err, connection) => {
