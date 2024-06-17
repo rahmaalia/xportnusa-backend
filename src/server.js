@@ -26,6 +26,7 @@ app.use('/products', productsRoutes);
 app.use('/sellers', sellersRoutes);
 app.use('/buyers', buyersRoutes);
 
+app.get("/", (req, res) => res.send("Welcome to xportnusa API management!"));
 
 // error handling
 app.use((err, req, res, next) => {

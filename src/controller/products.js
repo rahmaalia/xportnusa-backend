@@ -131,7 +131,7 @@ const getRecommendationsAndProducts = async (req, res) => {
 
     try {
         // Memanggil endpoint eksternal
-        const response = await axios.post('https://xport-j3z4zwlm6q-uc.a.run.app/recommend/search', {
+        const response = await axios.post('https://recommendation-j3z4zwlm6q-et.a.run.app/recommend/search', {
             product_name
         });
 
@@ -184,7 +184,7 @@ const getRecommendationsbyItem = async (req, res) => {
         console.log('Mengirim permintaan ke endpoint eksternal dengan item_id:', item_id);
 
         // Memanggil endpoint eksternal
-        const response = await axios.post('https://xport-j3z4zwlm6q-uc.a.run.app/recommend/content', {
+        const response = await axios.post('https://recommendation-j3z4zwlm6q-et.a.run.app/recommend/content', {
             item_id: Number(item_id)  // Pastikan item_id adalah integer
         });
 
