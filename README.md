@@ -25,3 +25,14 @@ POST /products
     description: string,
   }
   ```
+
+- response
+
+  ```typescript
+  {
+  "message": "Registration successful",
+  "apiKey": "your_generated_api_key"
+  }
+
+  Use the apiKey received in the response for authentication in subsequent requests.
+  ```
