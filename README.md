@@ -7,8 +7,6 @@ The base URL for all API endpoints is:
 https://xportnusa-cc-j3z4zwlm6q-et.a.run.app/
 ```
 
-# Authentication
-
 # Products
 Manage products within the Xportnusa platform.
 
