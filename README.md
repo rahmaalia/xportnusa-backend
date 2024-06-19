@@ -7,10 +7,10 @@ The base URL for all API endpoints is:
 https://xportnusa-cc-j3z4zwlm6q-et.a.run.app/
 ```
 
-# Products
+## Products
 Manage products within the Xportnusa platform.
 
-## Add New Product
+### _Add New Product_
 
 - Endpoint: `POST /products`
 - example link request
@@ -52,9 +52,9 @@ Manage products within the Xportnusa platform.
     }
   }
   ```
-  
+<br/>
 
-## Get All Products
+### _Get All Products_
 - Endpoint: `GET /products`
 - Example Request:
   ```html
@@ -109,8 +109,9 @@ Manage products within the Xportnusa platform.
         }
   }
   ```
+<br/>
 
-  ## Get Products by Id
+### _Get Products by Id_
 - Endpoint: `GET /products/{id}`
 - Example Request:
   ```html
@@ -152,8 +153,9 @@ Manage products within the Xportnusa platform.
     }
   }
   ```
+<br/>
 
-# Update a Product
+### _Update a Product_
 - Endpoint: `PATCH /products/{id}`
 - Example Request:
   ```http
@@ -190,8 +192,9 @@ Manage products within the Xportnusa platform.
     }
   }
   ```
+  <br/>
 
-# Delete a Product
+### _Delete a Product_
 - Endpoint: `DELETE /products/{id}`
 - Example Request:
   ```http
@@ -204,8 +207,9 @@ Manage products within the Xportnusa platform.
     "data": null
   }
   ```
+  <br/>
 
-# Search a Product
+### _Search a Product_
 - Endpoint: `GET /products/search?term={keyword}`
 - Example Request:
   ```http
@@ -245,8 +249,9 @@ Manage products within the Xportnusa platform.
     ]
   }
   ```
+<br/>
 
-# Recommendations by product_name 
+### _Recommendations by product_name_ 
 - Endpoint: `POST /products/recommendations`
 - Example Request:
   ```http
@@ -293,7 +298,9 @@ Manage products within the Xportnusa platform.
   }
   ```
 
-# Recommendations by filter 
+  <br/>
+
+### _Recommendations by filter_ 
 - Endpoint: `POST /products/recommendationsItem`
 - Example Request:
   ```http
@@ -340,9 +347,11 @@ Manage products within the Xportnusa platform.
   }
   ```
 
-# Sellers
+<br/>
+
+## Sellers
 Manage sellers within the Xportnusa platform.
-## Create a Seller
+### _Create a Seller_
 ```http
 POST /sellers
 ```
@@ -373,10 +382,11 @@ POST /sellers
     }
   }
   ```
+<br/>
 
-# Buyers
+## Buyers
 Manage Buyers within the Xportnusa platform.
-## Create a Buyer
+### _Create a Buyer_
 ```http
 POST /buyers
 ```
